@@ -1,0 +1,62 @@
+---
+title: "Untitled"
+output: html_document
+---
+패키지 로드
+```{r}
+library(tm)
+library(cluster)
+library(class)
+library(SnowballC)
+library(plyr)
+```
+데이터 불러오기
+```{r}
+r3 <- read.csv("r3.csv", header = TRUE)
+str(r3)
+r3.cor <- Corpus(VectorSource(r3[,2]))
+r3.cor
+```
+데이터전처리
+```{r}
+r3.clean <- tm_map(r3.cor, content_transformer(tolower)) #change to small letter
+r3.clean <- tm_map(r3.clean, removeWords, stopwords("english"))
+r3.clean <- tm_map(r3.clean, content_transformer(removePunctuation)) #remove punctuation like :,.!
+r3.clean <- tm_map(r3.clean, content_transformer(removeNumbers)) #remove numbers
+r3.clean <- tm_map(r3.clean, stripWhitespace)    #delete vacant space
+
+r3.dtm <- DocumentTermMatrix(r3.clean)
+r3.dtm
+```
+샘플
+```{r}
+r3.df <- as.data.frame(data.matrix(r3.dtm))
+r3.s <- sample(2, nrow(r3.df), replace = TRUE, prob = c(.70,.30))
+r3tr.m <- r3.df[r3.s == 1, ]
+r3ts.m <- r3.df[r3.s == 2, ]
+```
+군집화(pam)
+```{r}
+r3.pam <- pam(r3tr.m,3)
+r3.pam
+cl <- r3.pam$cluster
+```
+군집화(kmeans)
+```{r}
+r3tr.k <- kmeans(r3tr.m,3)
+r3tr.k
+cl <- r3tr.k$cluster
+```
+k-nn알고리즘
+```{r}
+knn1 <- knn(r3tr.m, r3ts.m, cl, k=1)
+knn1
+knn2 <- knn(r3tr.m, r3ts.m, cl, k=2)
+knn2
+knn3 <- knn(r3tr.m, r3ts.m, cl, k=3)
+knn3
+knn4 <- knn(r3tr.m, r3ts.m, cl, k=4)
+knn4
+knn5 <- knn(r3tr.m, r3ts.m, cl, k=5)
+knn5
+```
