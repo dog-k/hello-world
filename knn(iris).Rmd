@@ -1,0 +1,39 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+패키지 로드
+```{r}
+library(class)
+```
+데이터 불러오기(훈련데이터)
+```{r}
+iris <- read.csv("irisorigin.CSV", header = TRUE)
+str(iris)
+iriso <- sample(2, nrow(iris), replace = FALSE, prob = c(0.7, 0.3))
+iristr <- iris[iriso == 1, ]
+irists <- iris[iriso == 2, ]
+iristr.m <- as.matrix(iristr)
+iristr.m
+irists.m <- as.matrix(irists)
+irists.m
+```
+
+k-nn알고리즘
+```{r}
+knn1 <- knn(train = iristr.m[,1:4], test = irists.m[,1:4], cl = iristr[,5], k=1)
+irists.m <- cbind(irists.m,knn1)
+knn2 <- knn(train = iristr.m[,1:4], test = irists.m[,1:4], cl = iristr[,5], k=2)
+irists.m <- cbind(irists.m,knn2)
+knn3 <- knn(train = iristr.m[,1:4], test = irists.m[,1:4], cl = iristr[,5], k=3)
+irists.m <- cbind(irists.m,knn3)
+knn4 <- knn(train = iristr.m[,1:4], test = irists.m[,1:4], cl = iristr[,5], k=4)
+irists.m <- cbind(irists.m,knn4)
+knn5 <- knn(train = iristr.m[,1:4], test = irists.m[,1:4], cl = iristr[,5], k=5)
+irists.m <- cbind(irists.m,knn5)
+knn10 <- knn(train = iristr.m[,1:4], test = irists.m[,1:4], cl = iristr[,5], k=10)
+irists.m <- cbind(irists.m,knn10)
+irists.m
+```
+
